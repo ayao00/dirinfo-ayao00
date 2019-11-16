@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/types.h>
 
 int main(){
   DIR * tester = opendir("testdir");
@@ -22,23 +23,20 @@ int main(){
   int i = 0;
   int k = 0;
   int size = 0;
-  char filepath[256];
   while(file != NULL){
+    char filepath[256] = "";
+    strcat(filepath,"testdir");
+    strcat(filepath, "/");
+    strcat(filepath, file->d_name);
+    stat(filepath,&current);
     if(file->d_type == 4){
       strncpy(dir[i],file->d_name,256);
       i++;
     }else{
-      strcat(filepath,"testdir");
-      strcat(filepath, "/");
-      strcat(filepath, file->d_name);
-      stat(filepath,&current);
-      printf("%s\n", file->d_name);
-      printf("%lld\n", current.st_size);
-      printf("%o\n", current.st_mode);
-      size += current.st_size;
       strncpy(files[k], file->d_name,256);
       k++;
     }
+    size += current.st_size;
     file = readdir(tester);
   }
   printf("Total Diectory Size: %d Bytes\n", size);
