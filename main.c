@@ -17,24 +17,31 @@ int main(){
   printf("Statistics for directory: %s\n", file->d_name);
   file = readdir(tester);
   struct stat current;
-  char * dir[50][256];
-  char * files[50][256];
+  char dir[50][256];
+  char files[50][256];
   int i = 0;
   int k = 0;
   int size = 0;
+  char filepath[256];
   while(file != NULL){
     if(file->d_type == 4){
-      strcpy(dir[i],file->d_name);
+      strncpy(dir[i],file->d_name,256);
       i++;
     }else{
-      stat(file->d_name,&current);
+      strcat(filepath,"testdir");
+      strcat(filepath, "/");
+      strcat(filepath, file->d_name);
+      stat(filepath,&current);
+      printf("%s\n", file->d_name);
+      printf("%lld\n", current.st_size);
+      printf("%o\n", current.st_mode);
       size += current.st_size;
-      strcpy(files[k], file->d_name);
+      strncpy(files[k], file->d_name,256);
       k++;
     }
     file = readdir(tester);
   }
-  printf("Total Diectory Size: %d\n", size);
+  printf("Total Diectory Size: %d Bytes\n", size);
   printf("Directories:\n");
   for(int j = 0; j <i; j++){
     printf("\t%s\n", dir[j]);
