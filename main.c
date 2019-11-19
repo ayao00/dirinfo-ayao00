@@ -8,12 +8,21 @@
 #include <time.h>
 #include <sys/types.h>
 
-int main(){
-  DIR * tester = opendir("testdir");
-  if(errno){
-    printf("errno #%d: %s", errno, strerror(errno));
+int main(int argc, char *argv[]){
+  char * s = malloc(256);
+  if(argc <= 1){
+    printf("Directory: ");
+    fgets(s, 256, stdin);
+    s[strlen(s)-1] = 0;
+  }else{
+    s = argv[1];
   }
 
+  DIR * tester = opendir(s);
+  if(errno){
+    printf("errno #%d: %s\n", errno, strerror(errno));
+    return 0;
+  }
   struct dirent * file = readdir(tester);
   printf("Statistics for directory: %s\n", file->d_name);
   file = readdir(tester);
